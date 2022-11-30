@@ -4,7 +4,7 @@
 # It will use curl to get the HTML, jq to construct JSON as { "html": "...", "url": "..." }
 # and then post to webpage_classifier_server and output the classification
 
-webpage_classifier_server="http://localhost:8000" 
+webpage_classifier_server="${WEBPAGE_CLASSIFIER_SERVER:-http://localhost:8000}"
 url=$1
 
 if [ -z "$url" ]; then
@@ -12,6 +12,9 @@ if [ -z "$url" ]; then
   exit 1
 fi
 
-html=$(curl -s $url)
+html=$(curl -L $url)
+echo "Got ${#html} characters from $url"
 json=$(echo $html | jq -R -s '{html: ., url: "'$url'"}')
-curl -X POST $webpage_classifier_server -H "Content-Type: application/json" -d "$json"
+response=$(curl -X POST $webpage_classifier_server -H "Content-Type: application/json" -d "$json")
+echo $response
+echo $response | jq -r '.scores | to_entries | sort_by(.value) | reverse | map("  \(.key): \(.value)") | join("\n")'
