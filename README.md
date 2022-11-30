@@ -67,6 +67,12 @@ Which should return something like
 }
 ```
 
+There's also a helper script that can be used like:
+
+```
+./categorize.sh https://example.com
+```
+
 ## Deploying
 
 ```

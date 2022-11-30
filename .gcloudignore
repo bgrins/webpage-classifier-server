@@ -1,0 +1,7 @@
+base
+venv
+.vscode
+__pycache__
+ignore
+.env
+README.md
